@@ -324,6 +324,14 @@ body._loaded {
 .main__button:not(:last-child) {
   margin-bottom: 0.625rem;
 }
+.main__button_two, .main__button_three {
+  opacity: 0.3;
+  pointer-events: none;
+}
+.main__button_two._visible, .main__button_three._visible {
+  opacity: 1;
+  pointer-events: fill;
+}
 
 .header {
   position: relative;
@@ -1008,6 +1016,9 @@ body._loaded {
 .info__shield img {
   margin-bottom: 0.8125rem;
 }
+.info__shield._not-active {
+  opacity: 0.2;
+}
 .controls {
   min-height: calc(100vh - 20px);
   position: relative;
@@ -1114,22 +1125,22 @@ body._loaded {
   transform: scale(1.2);
 }
 
-.pac-man-left {
+.pac-man {
   background: url("../img/game/pacman-hero.svg") center/contain no-repeat;
+}
+.pac-man._shield {
+  background: url("../img/game/pac-shield.svg") center/contain no-repeat;
+}
+
+._pac-left {
   transform: scale(-1, 1);
 }
 
-.pac-man-right {
-  background: url("../img/game/pacman-hero.svg") center/contain no-repeat;
-}
-
-.pac-man-up {
-  background: url("../img/game/pacman-hero.svg") center/contain no-repeat;
+._pac-up {
   transform: rotate(-90deg);
 }
 
-.pac-man-down {
-  background: url("../img/game/pacman-hero.svg") center/contain no-repeat;
+._pac-down {
   transform: rotate(90deg);
 }
 
