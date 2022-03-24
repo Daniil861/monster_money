@@ -37,13 +37,21 @@
     let move_timer;
     let points = document.querySelector(".header__count");
     if (!sessionStorage.getItem("lifes")) sessionStorage.setItem("lifes", 3); else if (5 == sessionStorage.getItem("lifes") && document.querySelector(".header__lifes")) document.querySelector(".header__lifes").classList.add("_not-active");
-    if (sessionStorage.getItem("points")) points.textContent = sessionStorage.getItem("points"); else sessionStorage.setItem("points", 15e3);
+    if (sessionStorage.getItem("points")) points.textContent = sessionStorage.getItem("points"); else sessionStorage.setItem("points", 500);
+    if (document.querySelector(".game_one")) sessionStorage.setItem("shield", 1); else if (document.querySelector(".game_two")) sessionStorage.setItem("shield", 2); else if (document.querySelector(".game_three")) sessionStorage.setItem("shield", 3);
+    if (document.querySelector(".main_levels")) {
+        if (sessionStorage.getItem("game-one")) document.querySelector(".main__button_two").classList.add("_visible");
+        if (sessionStorage.getItem("game-two")) document.querySelector(".main__button_three").classList.add("_visible");
+    }
     document.addEventListener("click", (e => {
         let targetElement = e.target;
         if (targetElement.closest(".acces-preloader__button")) {
-            preloader.classList.add("_hide");
             sessionStorage.setItem("preloader", true);
-            wrapper.classList.add("_visible");
+            location.href = "index.html";
+            setTimeout((() => {
+                preloader.classList.add("_hide");
+                wrapper.classList.add("_visible");
+            }), 50);
         }
         if (targetElement.closest(".header__button")) {
             let current_point = sessionStorage.getItem("points");
@@ -76,6 +84,7 @@
             clearInterval(move_timer);
             move_pacman_bottom();
         }
+        if (targetElement.closest(".info__shield img")) get_active_shild();
     }));
     function show_message_buy_lifes() {
         let message = document.createElement("div");
@@ -86,10 +95,81 @@
             message.remove();
         }), 1500);
     }
+    function get_active_shild() {
+        let count_shield = +sessionStorage.getItem("shield");
+        if (count_shield > 0) {
+            add_shield_pacman();
+            count_shield--;
+            sessionStorage.setItem("shield", count_shield);
+            document.querySelector(".info__try").textContent = `X${count_shield}`;
+            if (0 == count_shield) document.querySelector(".info__shield").classList.add("_not-active");
+            setTimeout((() => {
+                remove_shield_pacman();
+            }), 5e3);
+        }
+    }
+    const tl = gsap.timeline({
+        defaults: {
+            duration: 1,
+            ease: Power1.easeOut
+        }
+    });
+    if (document.querySelector(".main__images_left") && document.querySelector(".main__images_right")) {
+        tl.fromTo(".main__item_center", {
+            y: 100,
+            opacity: 0
+        }, {
+            y: 0,
+            opacity: 1
+        });
+        tl.fromTo(".header", {
+            y: -100,
+            opacity: 0
+        }, {
+            y: 0,
+            opacity: 1
+        }, "<");
+        tl.fromTo(".main__images_left", {
+            y: -500
+        }, {
+            y: 0,
+            ease: "elastic.out(1, 0.4",
+            duration: 2,
+            delay: .8
+        });
+        tl.fromTo(".main__images_right", {
+            y: -500
+        }, {
+            y: 0,
+            ease: "elastic.out(1, 0.4",
+            duration: 2,
+            delay: .8
+        }, "<");
+        tl.fromTo(".main__flower_left", {
+            scale: 0,
+            x: 100,
+            rotation: "180deg"
+        }, {
+            scale: 1,
+            x: 0,
+            rotation: 0,
+            duration: .3
+        });
+        tl.fromTo(".main__flower_right", {
+            scale: 0,
+            x: -100,
+            rotation: "-180deg"
+        }, {
+            scale: 1,
+            x: 0,
+            rotation: 0,
+            duration: .3
+        });
+    }
     const grid = document.querySelector(".game__grid");
     const width = 27;
-    document.querySelector(".pac-man");
     let layout;
+    var shield = false;
     if (document.querySelector(".game_one")) layout = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 8, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 8, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 7, 7, 7, 7, 7, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 7, 7, 7, 7, 7, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 7, 7, 7, 7, 7, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]; else if (document.querySelector(".game_two")) layout = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 9, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 8, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 8, 0, 0, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 7, 7, 7, 7, 7, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 7, 7, 7, 7, 7, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 7, 7, 7, 7, 7, 1, 0, 1, 3, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 9, 0, 0, 0, 1, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]; else if (document.querySelector(".game_three")) layout = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 8, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 8, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 9, 0, 0, 0, 0, 0, 0, 1, 0, 1, 7, 7, 7, 7, 7, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 7, 7, 7, 7, 7, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 7, 7, 7, 7, 7, 1, 0, 1, 0, 0, 0, 0, 0, 0, 9, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 5, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 9, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ];
     const squares = [];
     function create_board() {
@@ -104,48 +184,77 @@
     if (document.querySelector(".game")) {
         create_board();
         sessionStorage.setItem("game-lifes", sessionStorage.getItem("lifes"));
-        squares[pacmanCurrentIndex].classList.add("pac-man-right");
+        squares[pacmanCurrentIndex].classList.add("pac-man");
+        squares[pacmanCurrentIndex].classList.add("_pac-right");
     }
-    function satrt_sheck_functions() {
+    function start_check_functions() {
         pac_dot_eating();
         power_pellet_eating();
         check_game_over();
         check_for_win();
     }
+    function add_shield_pacman() {
+        shield = true;
+    }
+    function remove_shield_pacman() {
+        shield = false;
+        squares[pacmanCurrentIndex].classList.remove("_shield");
+    }
     function remove_pacman() {
-        if (squares[pacmanCurrentIndex].classList.contains("pac-man-up")) squares[pacmanCurrentIndex].classList.remove("pac-man-up"); else if (squares[pacmanCurrentIndex].classList.contains("pac-man-right")) squares[pacmanCurrentIndex].classList.remove("pac-man-right"); else if (squares[pacmanCurrentIndex].classList.contains("pac-man-down")) squares[pacmanCurrentIndex].classList.remove("pac-man-down"); else if (squares[pacmanCurrentIndex].classList.contains("pac-man-left")) squares[pacmanCurrentIndex].classList.remove("pac-man-left");
+        if (squares[pacmanCurrentIndex].classList.contains("_pac-up")) {
+            squares[pacmanCurrentIndex].classList.remove("_pac-up");
+            squares[pacmanCurrentIndex].classList.remove("pac-man");
+        } else if (squares[pacmanCurrentIndex].classList.contains("_pac-right")) {
+            squares[pacmanCurrentIndex].classList.remove("_pac-right");
+            squares[pacmanCurrentIndex].classList.remove("pac-man");
+        } else if (squares[pacmanCurrentIndex].classList.contains("_pac-down")) {
+            squares[pacmanCurrentIndex].classList.remove("_pac-down");
+            squares[pacmanCurrentIndex].classList.remove("pac-man");
+        } else if (squares[pacmanCurrentIndex].classList.contains("_pac-left")) {
+            squares[pacmanCurrentIndex].classList.remove("_pac-left");
+            squares[pacmanCurrentIndex].classList.remove("pac-man");
+        }
+        if (shield) squares[pacmanCurrentIndex].classList.remove("_shield");
     }
     function move_pacman_left() {
         move_timer = setInterval((() => {
             remove_pacman();
             if (pacmanCurrentIndex % width !== 0 && !squares[pacmanCurrentIndex - 1].classList.contains("wall") && !squares[pacmanCurrentIndex - 1].classList.contains("ghost-lair")) pacmanCurrentIndex -= 1;
-            squares[pacmanCurrentIndex].classList.add("pac-man-left");
-            satrt_sheck_functions();
-        }), 500);
+            squares[pacmanCurrentIndex].classList.add("_pac-left");
+            squares[pacmanCurrentIndex].classList.add("pac-man");
+            if (shield) squares[pacmanCurrentIndex].classList.add("_shield");
+            start_check_functions();
+        }), 250);
     }
     function move_pacman_up() {
         move_timer = setInterval((() => {
             remove_pacman();
             if (pacmanCurrentIndex - width >= 0 && !squares[pacmanCurrentIndex - width].classList.contains("wall") && !squares[pacmanCurrentIndex - width].classList.contains("ghost-lair")) pacmanCurrentIndex -= width;
-            squares[pacmanCurrentIndex].classList.add("pac-man-up");
-            satrt_sheck_functions();
-        }), 500);
+            squares[pacmanCurrentIndex].classList.add("_pac-up");
+            squares[pacmanCurrentIndex].classList.add("pac-man");
+            if (shield) squares[pacmanCurrentIndex].classList.add("_shield");
+            start_check_functions();
+        }), 250);
     }
     function move_pacman_right() {
         move_timer = setInterval((() => {
             remove_pacman();
             if (pacmanCurrentIndex % width < width - 1 && !squares[pacmanCurrentIndex + 1].classList.contains("wall") && !squares[pacmanCurrentIndex + 1].classList.contains("ghost-lair")) pacmanCurrentIndex += 1;
-            squares[pacmanCurrentIndex].classList.add("pac-man-right");
-            satrt_sheck_functions();
-        }), 500);
+            squares[pacmanCurrentIndex].classList.add("_pac-right");
+            squares[pacmanCurrentIndex].classList.add("pac-man");
+            if (shield) squares[pacmanCurrentIndex].classList.add("_shield");
+            start_check_functions();
+        }), 250);
     }
     function move_pacman_bottom() {
         move_timer = setInterval((() => {
             remove_pacman();
             if (pacmanCurrentIndex + width < width * width && !squares[pacmanCurrentIndex + width].classList.contains("wall") && !squares[pacmanCurrentIndex + width].classList.contains("ghost-lair")) pacmanCurrentIndex += width;
-            squares[pacmanCurrentIndex].classList.add("pac-man-down");
-            satrt_sheck_functions();
-        }), 500);
+            squares[pacmanCurrentIndex].classList.add("_pac-down");
+            squares[pacmanCurrentIndex].classList.add("pac-man");
+            if (shield) squares[pacmanCurrentIndex].classList.add("_shield");
+            start_check_functions();
+        }), 250);
     }
     function pac_dot_eating() {
         if (squares[pacmanCurrentIndex].classList.contains("pac-dot")) {
@@ -161,7 +270,7 @@
         }
     }
     function power_pellet_eating() {
-        if (squares[pacmanCurrentIndex].classList.contains("power-banan") || squares[pacmanCurrentIndex].classList.contains("power-cherry") || squares[pacmanCurrentIndex].classList.contains("power-lemon")) {
+        if (squares[pacmanCurrentIndex].classList.contains("power-banan") || squares[pacmanCurrentIndex].classList.contains("power-cherry") || squares[pacmanCurrentIndex].classList.contains("power-lemon") || squares[pacmanCurrentIndex].classList.contains("power-slotmashine")) {
             let score = document.querySelector(".header__count");
             score.textContent = +score.innerHTML + 100;
             sessionStorage.setItem("points", score.innerHTML);
@@ -169,7 +278,7 @@
             setTimeout((() => {
                 un_scared_ghosts();
             }), 1e4);
-            if (squares[pacmanCurrentIndex].classList.contains("power-banan")) squares[pacmanCurrentIndex].classList.remove("power-banan"); else if (squares[pacmanCurrentIndex].classList.contains("power-cherry")) squares[pacmanCurrentIndex].classList.remove("power-cherry"); else if (squares[pacmanCurrentIndex].classList.contains("power-lemon")) squares[pacmanCurrentIndex].classList.remove("power-lemon");
+            if (squares[pacmanCurrentIndex].classList.contains("power-banan")) squares[pacmanCurrentIndex].classList.remove("power-banan"); else if (squares[pacmanCurrentIndex].classList.contains("power-cherry")) squares[pacmanCurrentIndex].classList.remove("power-cherry"); else if (squares[pacmanCurrentIndex].classList.contains("power-lemon")) squares[pacmanCurrentIndex].classList.remove("power-lemon"); else if (squares[pacmanCurrentIndex].classList.contains("power-slotmashine")) squares[pacmanCurrentIndex].classList.remove("power-slotmashine");
         }
     }
     function un_scared_ghosts() {
@@ -186,7 +295,7 @@
         }
     }
     let ghosts;
-    if (document.querySelector(".game_one")) ghosts = [ new Ghost("blinky", 252, 300), new Ghost("pinky", 29, 400) ]; else if (document.querySelector(".game_two")) ghosts = [ new Ghost("blinky", 252, 250), new Ghost("pinky", 29, 400), new Ghost("inky", 500, 300) ]; else if (document.querySelector(".game_three")) ghosts = [ new Ghost("blinky", 252, 250), new Ghost("pinky", 29, 350), new Ghost("inky", 500, 250), new Ghost("clyde", 535, 250) ];
+    if (document.querySelector(".game_one")) ghosts = [ new Ghost("blinky", 252, 250), new Ghost("pinky", 29, 400) ]; else if (document.querySelector(".game_two")) ghosts = [ new Ghost("blinky", 252, 250), new Ghost("pinky", 29, 400), new Ghost("inky", 500, 300) ]; else if (document.querySelector(".game_three")) ghosts = [ new Ghost("blinky", 252, 100), new Ghost("pinky", 29, 250), new Ghost("inky", 500, 200), new Ghost("clyde", 535, 250), new Ghost("clyde", 260, 250) ];
     if (document.querySelector(".game")) {
         ghosts.forEach((el => {
             squares[el.currentIndex].classList.add(el.className);
@@ -228,7 +337,7 @@
         }), ghost.speed);
     }
     function check_game_over() {
-        if (squares[pacmanCurrentIndex].classList.contains("ghost") && !squares[pacmanCurrentIndex].classList.contains("scared-ghost")) {
+        if (squares[pacmanCurrentIndex].classList.contains("ghost") && !squares[pacmanCurrentIndex].classList.contains("scared-ghost") && !squares[pacmanCurrentIndex].classList.contains("_shield")) {
             ghosts.forEach((el => clearInterval(el.timerId)));
             remove_pacman();
             clearInterval(move_timer);
@@ -241,7 +350,8 @@
             }));
             sessionStorage.setItem("game-lifes", current_lifes);
             setTimeout((() => {
-                squares[418].classList.add("pac-man-right");
+                squares[418].classList.add("pac-man");
+                squares[418].classList.add("_pac-right");
                 pacmanCurrentIndex = 418;
                 document.querySelector(".controls__buttons").classList.remove("_not-active");
             }), 1e3);
@@ -259,6 +369,7 @@
         if (0 == big_stones.length && 0 == bananas.length && 0 == cherrys.length && 0 == lemons.length && 0 == slotmashines.length) {
             ghosts.forEach((el => clearInterval(el.timerId)));
             document.querySelector(".play").classList.add("_active");
+            if (document.querySelector(".game_one")) sessionStorage.setItem("game-one", true); else if (document.querySelector(".game_two")) sessionStorage.setItem("game-two", true);
         }
     }
     window["FLS"] = true;
