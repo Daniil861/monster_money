@@ -262,7 +262,7 @@ body._loaded {
   background: url("../img/main/bg-main.jpg") center/cover no-repeat;
 }
 .main_levels {
-  background: linear-gradient(110.5deg, #1d0b25 15.25%, #351146 87.44%);
+  background: linear-gradient(110.5deg, #1d0b25 15.25%, #351146 87.44%) !important;
 }
 .main__menu {
   min-height: calc(100vh - 3.75rem);
@@ -1333,6 +1333,9 @@ body._loaded {
   .controls__buttons {
     transform: translate(-50%, -50%) scale(0.9);
   }
+}
+.controls__buttons._not-active {
+  pointer-events: none;
 }
 .controls__button {
   position: absolute;
