@@ -51,11 +51,9 @@
         let targetElement = e.target;
         if (targetElement.closest(".acces-preloader__button")) {
             sessionStorage.setItem("preloader", true);
-            location.href = "index.html";
-            setTimeout((() => {
-                preloader.classList.add("_hide");
-                wrapper.classList.add("_visible");
-            }), 50);
+            preloader.classList.add("_hide");
+            wrapper.classList.add("_visible");
+            start_animation();
         }
         if (targetElement.closest(".header__button")) {
             let current_point = sessionStorage.getItem("points");
@@ -157,7 +155,7 @@
             ease: Power1.easeOut
         }
     });
-    if (document.querySelector(".main__images_left") && document.querySelector(".main__images_right")) {
+    function start_animation() {
         tl.fromTo(".main__item_center", {
             y: 100,
             opacity: 0
