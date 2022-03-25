@@ -110,17 +110,11 @@
             document.querySelector(".bonus__button_high").classList.add("_active");
             sessionStorage.setItem("active-level", 3);
         }
-        if (targetElement.closest(".bonus__sand")) {
-            create_balls();
-            draw_balls();
-            balls.forEach((el => move_balls(el)));
-            minus_points_for_sand_ball();
-            document.querySelector(".bonus__sand").classList.add("_not-active");
-            points.classList.add("_minus-money");
+        if (targetElement.closest(".bonus__sand")) if (1 == sessionStorage.getItem("active-level") && sessionStorage.getItem("points") >= 100) start_balls(); else if (2 == sessionStorage.getItem("active-level") && sessionStorage.getItem("points") >= 250) start_balls(); else if (3 == sessionStorage.getItem("active-level") && sessionStorage.getItem("points") >= 500) start_balls(); else {
+            points.classList.add("_no-money");
             setTimeout((() => {
-                document.querySelector(".bonus__sand").classList.remove("_not-active");
-                points.classList.remove("_minus-money");
-            }), 5e3);
+                points.classList.remove("_no-money");
+            }), 1e3);
         }
     }));
     function show_message_buy_lifes() {
@@ -131,6 +125,18 @@
         setTimeout((() => {
             message.remove();
         }), 1500);
+    }
+    function start_balls() {
+        create_balls();
+        draw_balls();
+        balls.forEach((el => move_balls(el)));
+        minus_points_for_sand_ball();
+        document.querySelector(".bonus__sand").classList.add("_not-active");
+        points.classList.add("_minus-money");
+        setTimeout((() => {
+            document.querySelector(".bonus__sand").classList.remove("_not-active");
+            points.classList.remove("_minus-money");
+        }), 5e3);
     }
     function get_active_shild() {
         let count_shield = +sessionStorage.getItem("shield");
