@@ -343,6 +343,11 @@ body._loaded {
   margin-top: 1.25rem;
   padding: 0 0.625rem;
 }
+@media (max-width: 37.5em) {
+  .header__body {
+    margin-top: 0.3125rem;
+  }
+}
 .header__item {
   display: flex;
   justify-content: center;
@@ -365,6 +370,16 @@ body._loaded {
 }
 .header__score_game {
   margin: 0 auto;
+}
+@media (max-width: 43.75em) {
+  .header__score_game {
+    width: 7.5rem;
+  }
+}
+@media (max-width: 37.5em) {
+  .header__score_game {
+    width: 6.25rem;
+  }
 }
 @media (max-width: 25em) {
   .header__score {
@@ -556,12 +571,27 @@ body._loaded {
   pointer-events: none;
   opacity: 0.7;
 }
+@media (max-width: 37.5em) {
+  .bonus__sand {
+    width: 5rem;
+    height: 1.5625rem;
+    bottom: 20vh;
+  }
+}
 .bonus__buttons {
   position: absolute;
   bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
+}
+@media (max-width: 37.5em) {
+  .bonus__buttons {
+    bottom: 5%;
+    flex-direction: column;
+    left: 5%;
+    transform: translateX(0);
+  }
 }
 .bonus__button {
   width: 48px;
@@ -583,6 +613,11 @@ body._loaded {
 .bonus__button._active {
   background: #b60000;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset 0px 1px 0px rgba(255, 255, 255, 0.25);
+}
+@media (max-width: 37.5em) {
+  .bonus__button {
+    margin-bottom: 0.625rem;
+  }
 }
 
 .ball-white {
@@ -609,6 +644,14 @@ body._loaded {
   grid-template-columns: 0.45fr 1.1fr 0.45fr;
   justify-content: center;
   margin-top: 1.0625rem;
+}
+@media (max-width: 37.5em) {
+  .game__body {
+    grid-template-columns: 1.5fr 0.5fr;
+    min-height: calc(100vh - 0px);
+    position: relative;
+    margin-top: 0;
+  }
 }
 .game__grid {
   display: flex;
@@ -1041,6 +1084,31 @@ body._loaded {
 .game__item {
   justify-self: center;
 }
+@media (max-width: 40.625em) {
+  .game__item:first-child {
+    position: relative;
+    left: -30px;
+  }
+}
+@media (max-width: 37.5em) {
+  .game__item:first-child {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: auto;
+    width: 30%;
+  }
+}
+@media (max-width: 40.625em) {
+  .game__item:nth-child(2) {
+    margin-left: -40px;
+  }
+}
+@media (max-width: 37.5em) {
+  .game__item:nth-child(2) {
+    margin-left: 0px;
+  }
+}
 .game__info {
   margin-left: 8%;
   margin-top: 0.625rem;
@@ -1124,11 +1192,34 @@ body._loaded {
   border-radius: 0;
   margin-bottom: 0.625rem;
 }
+@media (max-width: 43.75em) {
+  .info__button-menu {
+    width: 5rem;
+    height: 1.875rem;
+  }
+  .info__button-menu p {
+    font-size: 0.625rem;
+    line-height: 0.75rem;
+  }
+}
+@media (max-width: 37.5em) {
+  .info__button-menu {
+    position: relative;
+    top: -90px;
+    z-index: 5;
+  }
+}
 .info__health {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 1.375rem;
+}
+@media (max-width: 37.5em) {
+  .info__health {
+    position: relative;
+    top: 60px;
+  }
 }
 .info__hearts {
   display: flex;
@@ -1146,6 +1237,11 @@ body._loaded {
 }
 .info__hearts._small .info__heart svg {
   max-width: 100%;
+}
+@media (max-width: 43.75em) {
+  .info__hearts {
+    transform: scale(0.6);
+  }
 }
 .info__heart {
   display: none;
@@ -1167,11 +1263,34 @@ body._loaded {
 .info__shield span:first-child {
   margin-bottom: 0.3125rem;
 }
+@media (max-width: 37.5em) {
+  .info__shield span:first-child {
+    margin-right: 10px;
+  }
+}
 .info__shield img {
   margin-bottom: 0.8125rem;
 }
+@media (max-width: 37.5em) {
+  .info__shield img {
+    margin-right: 20px;
+  }
+}
 .info__shield._not-active {
   opacity: 0.2;
+}
+@media (max-width: 43.75em) {
+  .info__shield {
+    transform: scale(0.7);
+  }
+}
+@media (max-width: 37.5em) {
+  .info__shield {
+    transform: scale(0.5);
+    flex-direction: row;
+    position: relative;
+    top: 20px;
+  }
 }
 .controls {
   min-height: calc(100vh - 20px);
@@ -1182,6 +1301,7 @@ body._loaded {
   top: 3.125rem;
   left: 0;
   opacity: 0;
+  z-index: 6;
   visibility: hidden;
   width: 100%;
   height: 3.125rem;
@@ -1208,6 +1328,11 @@ body._loaded {
   border-radius: 50%;
   background: radial-gradient(50% 50% at 50% 50%, #66ac8a 0%, #132e21 100%);
   border: 1px solid #b7b7b7;
+}
+@media (max-width: 43.75em) {
+  .controls__buttons {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
 }
 .controls__button {
   position: absolute;
