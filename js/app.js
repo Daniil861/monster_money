@@ -43,6 +43,10 @@
         if (sessionStorage.getItem("game-one")) document.querySelector(".main__button_two").classList.add("_visible");
         if (sessionStorage.getItem("game-two")) document.querySelector(".main__button_three").classList.add("_visible");
     }
+    if (document.querySelector(".bonus")) {
+        document.querySelector(".bonus__button_liner").classList.add("_active");
+        sessionStorage.setItem("active-level", 1);
+    }
     document.addEventListener("click", (e => {
         let targetElement = e.target;
         if (targetElement.closest(".acces-preloader__button")) {
@@ -66,6 +70,12 @@
                 sessionStorage.setItem("points", points.innerHTML);
                 if (current_lifes >= 4) document.querySelector(".header__lifes").classList.add("_not-active");
             }
+            if (current_point < 5e3) {
+                points.classList.add("_no-money");
+                setTimeout((() => {
+                    points.classList.remove("_no-money");
+                }), 1e3);
+            }
             if (5 == current_lifes) show_message_buy_lifes();
         }
         if (targetElement.closest(".controls__button_left")) {
@@ -85,6 +95,33 @@
             move_pacman_bottom();
         }
         if (targetElement.closest(".info__shield img")) get_active_shild();
+        if (targetElement.closest(".bonus__button_liner")) {
+            if (document.querySelector(".bonus__button_mid").classList.contains("_active")) document.querySelector(".bonus__button_mid").classList.remove("_active"); else if (document.querySelector(".bonus__button_high").classList.contains("_active")) document.querySelector(".bonus__button_high").classList.remove("_active");
+            document.querySelector(".bonus__button_liner").classList.add("_active");
+            sessionStorage.setItem("active-level", 1);
+        }
+        if (targetElement.closest(".bonus__button_mid")) {
+            if (document.querySelector(".bonus__button_liner").classList.contains("_active")) document.querySelector(".bonus__button_liner").classList.remove("_active"); else if (document.querySelector(".bonus__button_high").classList.contains("_active")) document.querySelector(".bonus__button_high").classList.remove("_active");
+            document.querySelector(".bonus__button_mid").classList.add("_active");
+            sessionStorage.setItem("active-level", 2);
+        }
+        if (targetElement.closest(".bonus__button_high")) {
+            if (document.querySelector(".bonus__button_liner").classList.contains("_active")) document.querySelector(".bonus__button_liner").classList.remove("_active"); else if (document.querySelector(".bonus__button_mid").classList.contains("_active")) document.querySelector(".bonus__button_mid").classList.remove("_active");
+            document.querySelector(".bonus__button_high").classList.add("_active");
+            sessionStorage.setItem("active-level", 3);
+        }
+        if (targetElement.closest(".bonus__sand")) {
+            create_balls();
+            draw_balls();
+            balls.forEach((el => move_balls(el)));
+            minus_points_for_sand_ball();
+            document.querySelector(".bonus__sand").classList.add("_not-active");
+            points.classList.add("_minus-money");
+            setTimeout((() => {
+                document.querySelector(".bonus__sand").classList.remove("_not-active");
+                points.classList.remove("_minus-money");
+            }), 5e3);
+        }
     }));
     function show_message_buy_lifes() {
         let message = document.createElement("div");
@@ -165,6 +202,161 @@
             rotation: 0,
             duration: .3
         });
+    }
+    const mini_field = document.querySelector(".bonus__field");
+    let mini_layout = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8 ];
+    const mini_squares = [];
+    function create_mini_game_board() {
+        for (let i = 0; i < mini_layout.length; i++) {
+            const square = document.createElement("div");
+            mini_field.appendChild(square);
+            mini_squares.push(square);
+            if (0 == mini_layout[i]) mini_squares[i].classList.add("ball-white"); else if (2 == mini_layout[i]) mini_squares[i].classList.add("multiply-25"); else if (3 == mini_layout[i]) mini_squares[i].classList.add("multiply-5"); else if (4 == mini_layout[i]) mini_squares[i].classList.add("multiply-0-5"); else if (5 == mini_layout[i]) mini_squares[i].classList.add("multiply-1-5"); else if (6 == mini_layout[i]) mini_squares[i].classList.add("multiply-1-75"); else if (7 == mini_layout[i]) mini_squares[i].classList.add("multiply-10"); else if (8 == mini_layout[i]) mini_squares[i].classList.add("multiply-3");
+        }
+    }
+    if (document.querySelector(".bonus")) create_mini_game_board();
+    function minus_points_for_sand_ball() {
+        if (1 == sessionStorage.getItem("active-level")) {
+            let points_storrage = sessionStorage.getItem("points");
+            points.textContent = +points_storrage - 100;
+            sessionStorage.setItem("points", points.innerHTML);
+        } else if (2 == sessionStorage.getItem("active-level")) {
+            let points_storrage = sessionStorage.getItem("points");
+            points.textContent = +points_storrage - 250;
+            sessionStorage.setItem("points", points.innerHTML);
+        } else if (3 == sessionStorage.getItem("active-level")) {
+            let points_storrage = sessionStorage.getItem("points");
+            points.textContent = +points_storrage - 500;
+            sessionStorage.setItem("points", points.innerHTML);
+        }
+    }
+    class Ball {
+        constructor(startIndex, speed) {
+            this.startIndex = startIndex;
+            this.speed = speed;
+            this.currentIndex = startIndex;
+            this.timerId = NaN;
+        }
+    }
+    function get_random_num(min, max) {
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+    let balls;
+    function create_balls() {
+        if (1 == sessionStorage.getItem("active-level")) balls = [ new Ball(get_random_num(5, 23), get_random_num(100, 350)), new Ball(get_random_num(5, 23), get_random_num(100, 350)), new Ball(get_random_num(5, 23), get_random_num(100, 350)), new Ball(get_random_num(5, 23), get_random_num(100, 350)), new Ball(get_random_num(5, 23), get_random_num(100, 350)), new Ball(get_random_num(5, 23), get_random_num(100, 350)), new Ball(get_random_num(5, 23), get_random_num(100, 350)), new Ball(get_random_num(5, 23), get_random_num(100, 350)) ]; else if (2 == sessionStorage.getItem("active-level")) balls = [ new Ball(get_random_num(5, 23), get_random_num(150, 350)), new Ball(get_random_num(5, 23), get_random_num(150, 350)), new Ball(get_random_num(5, 23), get_random_num(150, 350)), new Ball(get_random_num(5, 23), get_random_num(150, 350)) ]; else if (3 == sessionStorage.getItem("active-level")) balls = [ new Ball(get_random_num(5, 23), get_random_num(200, 350)), new Ball(get_random_num(5, 23), get_random_num(200, 350)) ];
+    }
+    function draw_balls() {
+        if (1 == sessionStorage.getItem("active-level")) {
+            mini_squares[balls[0].currentIndex].classList.add("balls");
+            setTimeout((() => {
+                mini_squares[balls[1].currentIndex].classList.add("balls");
+            }), 1e3);
+            setTimeout((() => {
+                mini_squares[balls[2].currentIndex].classList.add("balls");
+            }), 2e3);
+            setTimeout((() => {
+                mini_squares[balls[3].currentIndex].classList.add("balls");
+            }), 3e3);
+            setTimeout((() => {
+                mini_squares[balls[4].currentIndex].classList.add("balls");
+            }), 4e3);
+            setTimeout((() => {
+                mini_squares[balls[5].currentIndex].classList.add("balls");
+            }), 5e3);
+            setTimeout((() => {
+                mini_squares[balls[6].currentIndex].classList.add("balls");
+            }), 6e3);
+            setTimeout((() => {
+                mini_squares[balls[7].currentIndex].classList.add("balls");
+            }), 7e3);
+        } else if (1 == sessionStorage.getItem("active-level")) {
+            mini_squares[balls[0].currentIndex].classList.add("balls");
+            setTimeout((() => {
+                mini_squares[balls[1].currentIndex].classList.add("balls");
+            }), 1e3);
+            setTimeout((() => {
+                mini_squares[balls[2].currentIndex].classList.add("balls");
+            }), 2e3);
+            setTimeout((() => {
+                mini_squares[balls[3].currentIndex].classList.add("balls");
+            }), 3e3);
+        } else if (3 == sessionStorage.getItem("active-level")) {
+            mini_squares[balls[0].currentIndex].classList.add("balls");
+            setTimeout((() => {
+                mini_squares[balls[1].currentIndex].classList.add("balls");
+            }), 1e3);
+        }
+    }
+    function move_balls(ball) {
+        const directions = [ +1, -1 ];
+        ball.timerId = setInterval((function() {
+            mini_squares[ball.currentIndex].classList.remove("balls");
+            if (!mini_squares[ball.currentIndex + width].classList.contains("ball-white")) {
+                let current_direction = width + 2;
+                ball.currentIndex += current_direction;
+                mini_squares[ball.currentIndex].classList.add("balls");
+            } else {
+                let current_direction = directions[Math.floor(Math.random() * (2 - 0) + 0)];
+                ball.currentIndex += current_direction;
+                mini_squares[ball.currentIndex].classList.add("balls");
+            }
+            check_mini_game_over(ball);
+        }), ball.speed);
+    }
+    function check_mini_game_over(ball) {
+        if (mini_squares[ball.currentIndex + width].classList.contains("multiply-25")) {
+            clearInterval(ball.timerId);
+            mini_squares[ball.currentIndex].classList.add("_hide");
+            get_points_ball(".bonus__box_25", add_bonus_balls(25));
+        } else if (mini_squares[ball.currentIndex + width].classList.contains("multiply-5")) {
+            clearInterval(ball.timerId);
+            mini_squares[ball.currentIndex].classList.add("_hide");
+            get_points_ball(".bonus__box_5", add_bonus_balls(5));
+        } else if (mini_squares[ball.currentIndex + width].classList.contains("multiply-0-5")) {
+            clearInterval(ball.timerId);
+            mini_squares[ball.currentIndex].classList.add("_hide");
+            get_points_ball(".bonus__box_05", add_bonus_balls(.5));
+        } else if (mini_squares[ball.currentIndex + width].classList.contains("multiply-1-5")) {
+            clearInterval(ball.timerId);
+            mini_squares[ball.currentIndex].classList.add("_hide");
+            get_points_ball(".bonus__box_15", add_bonus_balls(1.5));
+        } else if (mini_squares[ball.currentIndex + width].classList.contains("multiply-1-75")) {
+            clearInterval(ball.timerId);
+            mini_squares[ball.currentIndex].classList.add("_hide");
+            get_points_ball(".bonus__box_17", add_bonus_balls(1.75));
+        } else if (mini_squares[ball.currentIndex + width].classList.contains("multiply-10")) {
+            clearInterval(ball.timerId);
+            mini_squares[ball.currentIndex].classList.add("_hide");
+            get_points_ball(".bonus__box_10", add_bonus_balls(10));
+        } else if (mini_squares[ball.currentIndex + width].classList.contains("multiply-3")) {
+            clearInterval(ball.timerId);
+            mini_squares[ball.currentIndex].classList.add("_hide");
+            get_points_ball(".bonus__box_3", add_bonus_balls(3));
+        }
+    }
+    function add_bonus_balls(count) {
+        if (1 == sessionStorage.getItem("active-level")) {
+            points.textContent = +points.innerHTML + Math.floor(10 * count);
+            sessionStorage.setItem("points", points.innerHTML);
+            return Math.floor(10 * count);
+        } else if (2 == sessionStorage.getItem("active-level")) {
+            points.textContent = +points.innerHTML + Math.floor(25 * count);
+            sessionStorage.setItem("points", points.innerHTML);
+            return Math.floor(25 * count);
+        } else if (3 == sessionStorage.getItem("active-level")) {
+            points.textContent = +points.innerHTML + Math.floor(50 * count);
+            sessionStorage.setItem("points", points.innerHTML);
+            return Math.floor(50 * count);
+        }
+    }
+    function get_points_ball(block, points) {
+        let point = document.createElement("div");
+        point.classList.add("bonus__text");
+        point.textContent = `+${points}`;
+        document.querySelector(block).append(point);
+        setTimeout((() => {
+            point.remove();
+        }), 1e3);
     }
     const grid = document.querySelector(".game__grid");
     const width = 27;
@@ -266,19 +458,59 @@
             let score = document.querySelector(".header__count");
             score.textContent = +score.innerHTML + 30;
             sessionStorage.setItem("points", score.innerHTML);
+            show_what_pac_eating("stone-orange.svg", 30);
             squares[pacmanCurrentIndex].classList.remove("pac-big-dot");
         }
+    }
+    function show_what_pac_eating(name, count) {
+        let dinner = document.createElement("div");
+        dinner.classList.add("controls__bonus-item");
+        let dinner_image = document.createElement("div");
+        dinner_image.classList.add("controls__image");
+        let dinner_image_inner = document.createElement("img");
+        dinner_image_inner.setAttribute("src", `img/game/${name}`);
+        let dinner_count = document.createElement("div");
+        dinner_count.classList.add("controls__count");
+        dinner_count.textContent = `+${count}`;
+        dinner_image.append(dinner_image_inner);
+        dinner.append(dinner_image, dinner_count);
+        document.querySelector(".game__controls").append(dinner);
+        setTimeout((() => {
+            dinner.remove();
+        }), 2500);
     }
     function power_pellet_eating() {
         if (squares[pacmanCurrentIndex].classList.contains("power-banan") || squares[pacmanCurrentIndex].classList.contains("power-cherry") || squares[pacmanCurrentIndex].classList.contains("power-lemon") || squares[pacmanCurrentIndex].classList.contains("power-slotmashine")) {
             let score = document.querySelector(".header__count");
-            score.textContent = +score.innerHTML + 100;
-            sessionStorage.setItem("points", score.innerHTML);
+            score.classList.add("_anim");
+            setTimeout((() => {
+                score.classList.remove("_anim");
+            }), 1500);
             ghosts.forEach((el => el.isScared = true));
             setTimeout((() => {
                 un_scared_ghosts();
-            }), 1e4);
-            if (squares[pacmanCurrentIndex].classList.contains("power-banan")) squares[pacmanCurrentIndex].classList.remove("power-banan"); else if (squares[pacmanCurrentIndex].classList.contains("power-cherry")) squares[pacmanCurrentIndex].classList.remove("power-cherry"); else if (squares[pacmanCurrentIndex].classList.contains("power-lemon")) squares[pacmanCurrentIndex].classList.remove("power-lemon"); else if (squares[pacmanCurrentIndex].classList.contains("power-slotmashine")) squares[pacmanCurrentIndex].classList.remove("power-slotmashine");
+            }), 5e3);
+            if (squares[pacmanCurrentIndex].classList.contains("power-banan")) {
+                squares[pacmanCurrentIndex].classList.remove("power-banan");
+                score.textContent = +score.innerHTML + 150;
+                sessionStorage.setItem("points", score.innerHTML);
+                show_what_pac_eating("banan.png", 150);
+            } else if (squares[pacmanCurrentIndex].classList.contains("power-cherry")) {
+                score.textContent = +score.innerHTML + 200;
+                sessionStorage.setItem("points", score.innerHTML);
+                show_what_pac_eating("cherry.svg", 200);
+                squares[pacmanCurrentIndex].classList.remove("power-cherry");
+            } else if (squares[pacmanCurrentIndex].classList.contains("power-lemon")) {
+                squares[pacmanCurrentIndex].classList.remove("power-lemon");
+                score.textContent = +score.innerHTML + 100;
+                sessionStorage.setItem("points", score.innerHTML);
+                show_what_pac_eating("lemon.png", 100);
+            } else if (squares[pacmanCurrentIndex].classList.contains("power-slotmashine")) {
+                score.textContent = +score.innerHTML + 250;
+                sessionStorage.setItem("points", score.innerHTML);
+                show_what_pac_eating("slotmashine.png", 250);
+                squares[pacmanCurrentIndex].classList.remove("power-slotmashine");
+            }
         }
     }
     function un_scared_ghosts() {
@@ -301,7 +533,9 @@
             squares[el.currentIndex].classList.add(el.className);
             squares[el.currentIndex].classList.add("ghost");
         }));
-        ghosts.forEach((el => move_ghost(el)));
+        setTimeout((() => {
+            ghosts.forEach((el => move_ghost(el)));
+        }), 2e3);
         if (sessionStorage.getItem("lifes") > 3) document.querySelector(".info__hearts").classList.add("_small");
         if (3 == sessionStorage.getItem("lifes")) lifes.forEach(((el, index) => {
             if (index <= 2) el.classList.add("_visible");
@@ -328,7 +562,7 @@
                 if (-1 == current_direction) squares[ghost.currentIndex].classList.add(ghost.className, "ghost", "_left"); else if (+1 == current_direction) squares[ghost.currentIndex].classList.add(ghost.className, "ghost", "_right"); else if (current_direction == -width) squares[ghost.currentIndex].classList.add(ghost.className, "ghost", "_up"); else if (current_direction == width) squares[ghost.currentIndex].classList.add(ghost.className, "ghost", "_down");
             } else direction = directions[Math.floor(Math.random() * (directions.length - 0) + 0)];
             if (ghost.isScared) squares[ghost.currentIndex].classList.add("scared-ghost");
-            if (ghost.isScared && squares[ghost.currentIndex].classList.contains("pac-man-left") || squares[ghost.currentIndex].classList.contains("pac-man-right") || squares[ghost.currentIndex].classList.contains("pac-man-up") && squares[ghost.currentIndex].classList.contains("pac-man-down")) {
+            if (ghost.isScared && squares[ghost.currentIndex].classList.contains("_pac-left") || ghost.isScared && squares[ghost.currentIndex].classList.contains("_pac-right") || ghost.isScared && squares[ghost.currentIndex].classList.contains("_pac-up") || ghost.isScared && squares[ghost.currentIndex].classList.contains("_pac-down")) {
                 if (squares[ghost.currentIndex].classList.contains("_left")) squares[ghost.currentIndex].classList.remove(ghost.className, "ghost", "scared-ghost", "_left"); else if (squares[ghost.currentIndex].classList.contains("_right")) squares[ghost.currentIndex].classList.remove(ghost.className, "ghost", "scared-ghost", "_right"); else if (squares[ghost.currentIndex].classList.contains("_up")) squares[ghost.currentIndex].classList.remove(ghost.className, "ghost", "scared-ghost", "_up"); else if (squares[ghost.currentIndex].classList.contains("_down")) squares[ghost.currentIndex].classList.remove(ghost.className, "ghost", "scared-ghost", "_down");
                 ghost.currentIndex = ghost.startIndex;
                 squares[ghost.currentIndex].classList.add(ghost.className, "ghost", "_left");
