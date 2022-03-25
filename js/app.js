@@ -70,7 +70,7 @@
                 sessionStorage.setItem("points", points.innerHTML);
                 if (current_lifes >= 4) document.querySelector(".header__lifes").classList.add("_not-active");
             }
-            if (current_point < 5e3) {
+            if (current_point < 5e3 && current_lifes < 5) {
                 points.classList.add("_no-money");
                 setTimeout((() => {
                     points.classList.remove("_no-money");
@@ -126,7 +126,7 @@
     function show_message_buy_lifes() {
         let message = document.createElement("div");
         message.classList.add("header__message");
-        message.textContent = "Max lifes is open - 5";
+        message.textContent = "You have maximum lifes - 5";
         document.querySelector(".header__lifes").append(message);
         setTimeout((() => {
             message.remove();
@@ -171,16 +171,14 @@
         }, {
             y: 0,
             ease: "elastic.out(1, 0.4",
-            duration: 2,
-            delay: .8
+            duration: 2
         });
         tl.fromTo(".main__images_right", {
             y: -500
         }, {
             y: 0,
             ease: "elastic.out(1, 0.4",
-            duration: 2,
-            delay: .8
+            duration: 2
         }, "<");
         tl.fromTo(".main__flower_left", {
             scale: 0,
